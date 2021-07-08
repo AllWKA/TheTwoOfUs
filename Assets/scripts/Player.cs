@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -6,7 +7,9 @@ public class Player : MonoBehaviour
     private Animator _animator;
     private Rigidbody _rb;
     private String _isMoving = "IsMoving";
+    private GameObject _actionObject;
     
+    public GameObject _emptyObject;
     public GameObject cam;
     public float movementSpeed = 10f;
     public float jumpForce = 100f;
@@ -15,6 +18,7 @@ public class Player : MonoBehaviour
     {
         this._animator = GetComponent<Animator>();
         this._rb = GetComponent<Rigidbody>();
+        this._actionObject = _emptyObject;
     }
 
     void Update()
@@ -25,7 +29,35 @@ public class Player : MonoBehaviour
         {
             this._rb.AddForce(transform.up*jumpForce);
         }
+
         
+        print("action object:" + this._actionObject.tag + " this tag:" + this.tag);
+        if (Input.GetKeyDown(KeyCode.E) && this._actionObject != null && this._actionObject.transform.parent != this.transform)
+        {
+            print("pick object");
+            this._actionObject.transform.SetParent(this.transform);
+        } else if (Input.GetKeyDown(KeyCode.E) && this._actionObject != null && this._actionObject.transform.parent.CompareTag(this.tag))
+        {
+            print("leave object");
+            this._actionObject.transform.SetParent(null);
+        }
+        
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag.Equals("Cube"))
+        {
+            this._actionObject = other.gameObject;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (this._actionObject != null && this._actionObject.tag.Equals(other.tag))
+        {
+            // this._actionObject = this._emptyObject;
+        }
     }
 
     private void Rotate(){
