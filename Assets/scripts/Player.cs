@@ -30,18 +30,34 @@ public class Player : MonoBehaviour
             this._rb.AddForce(transform.up*jumpForce);
         }
 
-        
-        print("action object:" + this._actionObject.tag + " this tag:" + this.tag);
-        if (Input.GetKeyDown(KeyCode.E) && this._actionObject != null && this._actionObject.transform.parent != this.transform)
+
+        if (this._actionObject != null && this._actionObject.transform.parent != this.transform)
         {
-            print("pick object");
-            this._actionObject.transform.SetParent(this.transform);
-        } else if (Input.GetKeyDown(KeyCode.E) && this._actionObject != null && this._actionObject.transform.parent.CompareTag(this.tag))
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                this._actionObject.transform.SetParent(this.transform);
+            } else if (Input.GetKeyDown(KeyCode.Space))
+            {
+                this._actionObject.transform.SetParent(null);
+                this.transform.position = new Vector3(this._actionObject.transform.position.x, this._actionObject.transform.position.y + 1, this._actionObject.transform.position.z);
+            }
+        } else if (this._actionObject != null && this._actionObject.transform.parent.CompareTag(this.tag))
         {
-            print("leave object");
-            this._actionObject.transform.SetParent(null);
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                this._actionObject.transform.SetParent(null);
+            }
         }
         
+        // if (Input.GetKeyDown(KeyCode.E) && this._actionObject != null && this._actionObject.transform.parent != this.transform)
+        // {
+        //     print("pick object");
+        //     this._actionObject.transform.SetParent(this.transform);
+        // } else if (Input.GetKeyDown(KeyCode.E) && this._actionObject != null && this._actionObject.transform.parent.CompareTag(this.tag))
+        // {
+        //     print("leave object");
+        //     this._actionObject.transform.SetParent(null);
+        // }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -56,7 +72,7 @@ public class Player : MonoBehaviour
     {
         if (this._actionObject != null && this._actionObject.tag.Equals(other.tag))
         {
-            // this._actionObject = this._emptyObject;
+            this._actionObject = this._emptyObject;
         }
     }
 
