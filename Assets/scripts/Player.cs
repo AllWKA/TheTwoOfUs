@@ -25,39 +25,31 @@ public class Player : MonoBehaviour
     {
         this.Rotate();
         this.Movement();
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            this._rb.AddForce(transform.up*jumpForce);
-        }
+        this.ActivateObjectAction();
+    }
 
-
+    private void ActivateObjectAction()
+    {
         if (this._actionObject != null && this._actionObject.transform.parent != this.transform)
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
                 this._actionObject.transform.SetParent(this.transform);
-            } else if (Input.GetKeyDown(KeyCode.Space))
+            }
+            else if (Input.GetKeyDown(KeyCode.Space))
             {
                 this._actionObject.transform.SetParent(null);
-                this.transform.position = new Vector3(this._actionObject.transform.position.x, this._actionObject.transform.position.y + 1, this._actionObject.transform.position.z);
+                this.transform.position = new Vector3(this._actionObject.transform.position.x,
+                    this._actionObject.transform.position.y + 1, this._actionObject.transform.position.z);
             }
-        } else if (this._actionObject != null && this._actionObject.transform.parent.CompareTag(this.tag))
+        }
+        else if (this._actionObject != null && this._actionObject.transform.parent.CompareTag(this.tag))
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
                 this._actionObject.transform.SetParent(null);
             }
         }
-        
-        // if (Input.GetKeyDown(KeyCode.E) && this._actionObject != null && this._actionObject.transform.parent != this.transform)
-        // {
-        //     print("pick object");
-        //     this._actionObject.transform.SetParent(this.transform);
-        // } else if (Input.GetKeyDown(KeyCode.E) && this._actionObject != null && this._actionObject.transform.parent.CompareTag(this.tag))
-        // {
-        //     print("leave object");
-        //     this._actionObject.transform.SetParent(null);
-        // }
     }
 
     private void OnTriggerEnter(Collider other)
