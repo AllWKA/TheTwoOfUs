@@ -6,7 +6,6 @@ public class Player : MonoBehaviour
 {
     private Animator _animator;
     private Rigidbody _rb;
-    private String _isMoving = "IsMoving";
     private GameObject _actionObject;
     
     public GameObject _emptyObject;
@@ -88,58 +87,68 @@ public class Player : MonoBehaviour
 
     private void PlayAnimation(Vector3 fowardVector, Vector3 horizontalVector)
     {
-        if (Input.GetAxis("Vertical") == 0 && Input.GetAxis("Horizontal") == 0)
+        Boolean isMovingFoward = Input.GetAxis("Vertical") > 0;
+        Boolean isMovingBackwards = Input.GetAxis("Vertical") < 0;
+        Boolean isNotMovingFowardOrBackwards = !isMovingFoward && !isMovingBackwards;
+        
+        Boolean isMovingLeft = Input.GetAxis("Horizontal") < 0;
+        Boolean isMovingRight = Input.GetAxis("Horizontal") > 0;
+        Boolean isNotMovingLeftOrRight = !isMovingLeft && !isMovingRight;
+
+        if (isNotMovingLeftOrRight)
         {
-            this._animator.SetBool(this._isMoving, false);
+            this._animator.SetBool("IsMovingLeft", false);
+            this._animator.SetBool("IsMovingRight", false);
+        } 
+        
+        if (isNotMovingFowardOrBackwards)
+        {
+            this._animator.SetBool("IsMovingFoward", false);
+            this._animator.SetBool("IsMovingBackward", false);
         }
-        else
+
+        if (isNotMovingFowardOrBackwards || isNotMovingLeftOrRight)
         {
-            this._animator.SetBool(this._isMoving, true);
+            this._animator.SetBool("IsMovingFowardLeft", false);
+            this._animator.SetBool("IsMovingFowardRight", false);
+            this._animator.SetBool("IsMovingBackwardLeft", false);
+            this._animator.SetBool("IsMovingBackwardRight", false); 
         }
         
-        if (Input.GetAxis("Vertical")>0 && Input.GetAxis("Horizontal") == 0)
+        if (isMovingFoward && isNotMovingLeftOrRight)
         {
-            this._animator.Play("Forwards");
-            this._animator.SetBool(this._isMoving, true);
+            this._animator.SetBool("IsMovingFoward", true);
         }
-        else if (Input.GetAxis("Vertical")<0 && Input.GetAxis("Horizontal") == 0)
+        else if (isMovingBackwards && isNotMovingLeftOrRight)
         {
-            this._animator.Play("Backwards");
-            this._animator.SetBool(this._isMoving, true);
+            this._animator.SetBool("IsMovingBackward", true);
         }
-        else if (Input.GetAxis("Vertical") > 0 && Input.GetAxis("Horizontal") > 0)
+        else if (isMovingFoward && isMovingRight)
         {
-            this._animator.Play("ForwardsRight");
-            this._animator.SetBool(this._isMoving, true);
+            this._animator.SetBool("IsMovingFowardRight", true);
+            this._animator.SetBool("IsMovingFoward", false);
         }
-        else if (Input.GetAxis("Vertical") > 0 && Input.GetAxis("Horizontal") < 0)
+        else if (isMovingFoward && isMovingLeft)
         {
-            this._animator.Play("ForwardsLeft");
-            this._animator.SetBool(this._isMoving, true);
+            this._animator.SetBool("isMovingFowardLeft", true);
+            this._animator.SetBool("IsMovingFoward", false);
         }
-        else if (Input.GetAxis("Vertical") < 0 && Input.GetAxis("Horizontal") > 0)
+        else if (isMovingBackwards && isMovingRight)
         {
-            this._animator.Play("BackwardsRight");
-            this._animator.SetBool(this._isMoving, true);
+            this._animator.SetBool("IsMovingBackwardRight", true);
+            this._animator.SetBool("IsMovingBackward", false);
+        } else if (isMovingBackwards && isMovingLeft)
+        {
+            this._animator.SetBool("IsMovingBackwardLeft", true);
+            this._animator.SetBool("IsMovingBackward", false);
         }
-        else if (Input.GetAxis("Vertical") < 0 && Input.GetAxis("Horizontal") < 0)
+        
+        if (isNotMovingFowardOrBackwards && isMovingLeft)
         {
-            this._animator.Play("BackwardsLeft");
-            this._animator.SetBool(this._isMoving, true);
-        }
-        else if (Input.GetAxis("Vertical")==0 && Input.GetAxis("Horizontal") < 0)
+            this._animator.SetBool("IsMovingLeft", true);
+        } else if (isNotMovingFowardOrBackwards && isMovingRight)
         {
-            this._animator.Play("Left");
-            this._animator.SetBool(this._isMoving, true);
-        }
-        else if (Input.GetAxis("Vertical")==0 && Input.GetAxis("Horizontal") > 0)
-        {
-            this._animator.Play("Right");
-            this._animator.SetBool(this._isMoving, true);
-        }
-        else if (fowardVector.magnitude == 0 && horizontalVector.magnitude == 0)
-        {
-            this._animator.SetBool(this._isMoving, false);
+            this._animator.SetBool("IsMovingRight", true);
         }
     }
 
